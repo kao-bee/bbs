@@ -7,31 +7,28 @@ use Amon2::Web::Dispatcher::RouterBoom;
 any '/' => sub {
     my ($c) = @_;
 #    my @entries = $c->db->get_entry;
-    my $entries_ref = $c->db->get_entry;
+    my $threads_ref = $c->db->get_threads;
+
+    for my $thread (@$threads_ref) {
+        my $responses_ref = $c->db->search_by_thread_id($thread->{id});
+        $thread->{responses} = $responses_ref;
+    }
     return $c->render('index.tx', {
-            entries => $entries_ref,
+            threads => $threads_ref,
     });
 };
 
-post '/post' => sub {
+post '/create/thread' => sub {
     my ($c) = @_;
 
-    if (my $body = $c->req->param('body')) {
-        $c->db->insert_entry($body);
+    if (my $subject = $c->req->param('subject')) {
+        my $name //= 'no name';
+        my $thread_id = $c->db->add_thread($subject, $name);
+
+        my $body = $c->req->param('body') || '';
+
+        $c->db->add_response($thread_id, $body, $name);
     }
     return $c->redirect('/');
 };
 
-post '/reset_counter' => sub {
-    my $c = shift;
-    $c->session->remove('counter');
-    return $c->redirect('/');
-};
-
-post '/account/logout' => sub {
-    my ($c) = @_;
-    $c->session->expire();
-    return $c->redirect('/');
-};
-
-1;

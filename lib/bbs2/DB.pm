@@ -32,11 +32,39 @@ sub dbh {
     return $self->{_dbh};
 }
 
-sub get_entry {
+sub insert_thread_sth {
+    my $self = shift;
+    unless (defined $self->{_ins_th_sth}){
+        $self->{_ins_th_sth} = $self->dbh->prepare(
+            q{INSERT INTO threads (subject, name) VALUES (?,?)}
+        );
+    }
+    return $self->{_ins_th_sth};
+}
+
+sub insert_response_sth {
+    my $self = shift;
+    unless (defined $self->{_ins_res_sth}) {
+        $self->{_ins_res_sth} = $self->dbh->prepare(
+            q{INSERT INTO responses (thread_id, body, name) VALUES (?,?,?)}
+        );
+    }
+    return $self->{_ins_res_sth};
+}
+
+sub get_threads {
     my $self = shift;
 
     my $entries_ref = $self->dbh->selectall_arrayref(
-        q{SELECT * FROM entry ORDER BY id ASC },
+        q{SELECT * FROM threads ORDER BY id ASC },
+        {Slice => {}}
+    );
+}
+
+sub search_by_thread_id {
+    my ($self, $thread_id) = @_;
+    my $responses_ref = $self->dbh->selectall_arrayref(
+        qq{SELECT * FROM responses WHERE thread_id = $thread_id ORDER BY id ASC},
         {Slice => {}}
     );
 }
@@ -45,10 +73,24 @@ sub insert_entry {
     my ($self, $body) = @_;
 
     my $sth = $self->dbh->prepare(
-        qq{INSERT INTO entry (body) VALUE (?)}
+        qq{INSERT INTO threads (subject) VALUE (?)}
     );
 
     $sth->execute($body);
+}
+
+sub add_thread {
+    my ($self, $subject, $name) = @_;
+
+    $self->insert_thread_sth->execute($subject, $name);
+
+    return $self->insert_thread_sth->{mysql_insertid};
+}
+
+sub add_response {
+    my ($self, $thread_id, $body, $name) = @_;
+
+    $self->insert_response_sth->execute($thread_id, $body, $name);
 }
 
 1;

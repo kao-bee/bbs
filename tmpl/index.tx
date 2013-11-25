@@ -4,10 +4,10 @@
 
 <hr />
 
-<form class="well" method="post" action="<: uri_for('/post') :>">
+<form class="well" method="post" action="<: uri_for('/create/thread') :>">
     <h1>Create Thread</h1>
     <p>
-        <input type="text" name="title" placeholder="title"/>
+        <input type="text" name="subject" placeholder="subject"/>
         <div>
             <textarea name="body" rows="8" cols="60" placeholder="content"></textarea>
         </div>
@@ -16,9 +16,16 @@
 </form>
 
 <ul class="nav nav-stacked">
-    : for $entries -> $entry {
+    : for $threads-> $thread {
     <li>
-        <div class="well"><: $entry.id :>. <: $entry.body :></div>
+        <div class="well">
+            <h2><: $thread.id :>. <: $thread.subject :></h2>
+            <ul class="nav">
+                : for $thread.responses -> $res {
+                <li>&nbsp;&nbsp;<: $~res.count :>: <: $res.body :></li>
+                : }
+            </ul>
+        </div>
     </li>
     : }
 </ul>

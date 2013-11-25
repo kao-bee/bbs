@@ -1,4 +1,12 @@
-CREATE TABLE IF NOT EXISTS entry (
-    id           INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    body         VARCHAR(255)
+CREATE TABLE IF NOT EXISTS threads (
+    id          INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    subject     VARCHAR(255),
+    name        VARCHAR(255)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS responses (
+    id          INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    thread_id   INTEGER NOT NULL,
+    body        TEXT,
+    name        VARCHAR(255)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
