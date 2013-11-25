@@ -6,12 +6,20 @@ use Amon2::Web::Dispatcher::RouterBoom;
 
 any '/' => sub {
     my ($c) = @_;
-    my $counter = $c->session->get('counter') || 0;
-    $counter++;
-    $c->session->set('counter' => $counter);
+#    my @entries = $c->db->get_entry;
+    my $entries_ref = $c->db->get_entry;
     return $c->render('index.tx', {
-        counter => $counter,
+            entries => $entries_ref,
     });
+};
+
+post '/post' => sub {
+    my ($c) = @_;
+
+    if (my $body = $c->req->param('body')) {
+        $c->db->insert_entry($body);
+    }
+    return $c->redirect('/');
 };
 
 post '/reset_counter' => sub {

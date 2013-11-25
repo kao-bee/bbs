@@ -8,9 +8,9 @@ use Teng::Schema::Declare;
 base_row_class 'bbs2::DB::Row';
 
 table {
-    name 'member';
+    name 'entry';
     pk 'id';
-    columns qw(id name);
+    columns qw(id body);
 };
 
 1;
