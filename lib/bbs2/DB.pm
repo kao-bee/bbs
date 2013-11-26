@@ -56,7 +56,7 @@ sub get_threads {
     my $self = shift;
 
     my $entries_ref = $self->dbh->selectall_arrayref(
-        q{SELECT * FROM threads ORDER BY id ASC },
+        q{SELECT * FROM threads ORDER BY id DESC },
         {Slice => {}}
     );
 }

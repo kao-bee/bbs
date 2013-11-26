@@ -32,3 +32,16 @@ post '/create/thread' => sub {
     return $c->redirect('/');
 };
 
+post '/create/response' => sub {
+    my ($c) = @_;
+    my $thread_id = $c->req->param('thread-id');
+    my $body = $c->req->param('body');
+    my $name = $c->req->param('name');
+
+    return $c->redirect('/') unless defined $thread_id && $body;
+
+    $name //= 'anonymous';
+
+    $c->db->add_response($thread_id, $body, $name);
+    return $c->redirect('/');
+}

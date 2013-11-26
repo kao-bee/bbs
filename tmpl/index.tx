@@ -7,11 +7,16 @@
 <form class="well" method="post" action="<: uri_for('/create/thread') :>">
     <h1>Create Thread</h1>
     <p>
-        <input type="text" name="subject" placeholder="subject"/>
+        <div>
+            <input type="text" name="subject" placeholder="subject"/>
+        </div>
+        <div>
+            <input type="text" name="name" placeholder="name"/>
+        </div>
         <div>
             <textarea name="body" rows="8" cols="60" placeholder="content"></textarea>
         </div>
-        <input class="btn btn-primary" type="submit" value="Send" />
+        <input class="btn btn-primary" type="submit" value="Create" />
     </p>
 </form>
 
@@ -22,8 +27,25 @@
             <h2><: $thread.id :>. <: $thread.subject :></h2>
             <ul class="nav">
                 : for $thread.responses -> $res {
-                <li>&nbsp;&nbsp;<: $~res.count :>: <: $res.body :></li>
+                <li>
+                    <div style="margin:0 0 0 1em">
+                        <: $~res.count :>: <: $res.name :>
+                    </div>
+                    <div style="margin:0 0 0 2em;">
+                        <: $res.body :>
+                    </div>
+                </li>
                 : }
+                <form method="post" action="<: uri_for('/create/response') :>">
+                    <input type="hidden" name="thread-id" value="<: $thread.id :>" />
+                    <input type="text" name="name" placeholder="name" />
+                    <div>
+                        <textarea name="body" rows="6" cols="60" placeholder="content"></textarea>
+                    </div>
+                    <input class="btn btn-primary" type="submit" value="Res" />
+
+                </form>
+
             </ul>
         </div>
     </li>
