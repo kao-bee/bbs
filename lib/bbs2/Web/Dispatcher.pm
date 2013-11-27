@@ -22,12 +22,11 @@ post '/create/thread' => sub {
     my ($c) = @_;
 
     my $subject = $c->req->param('subject');
-    my $name = $c->req->param('name');
+    my $name = $c->req->param('name') || 'anonymous';
     my $body = $c->req->param('body') || '';
 
     return $c->render_json(+{response=>'false'}) unless defined $subject;
 
-    $name //= 'anonymous';
     my $thread_id = $c->db->add_thread($subject, $name);
 
     $c->db->add_response($thread_id, $body, $name);
@@ -38,7 +37,7 @@ post '/create/thread/insite' => sub {
     my ($c) = @_;
 
     my $subject = $c->req->param('subject');
-    my $name = $c->req->param('name');
+    my $name = $c->req->param('name') || 'anonymous';
     my $body = $c->req->param('body') || '';
 
     return $c->redirect('/') unless defined $subject;
