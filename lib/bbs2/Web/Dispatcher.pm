@@ -21,18 +21,50 @@ any '/' => sub {
 post '/create/thread' => sub {
     my ($c) = @_;
 
-    if (my $subject = $c->req->param('subject')) {
-        my $name //= 'no name';
-        my $thread_id = $c->db->add_thread($subject, $name);
+    my $subject = $c->req->param('subject');
+    my $name = $c->req->param('name');
+    my $body = $c->req->param('body') || '';
 
-        my $body = $c->req->param('body') || '';
+    return $c->render_json(+{response=>'false'}) unless defined $subject;
 
-        $c->db->add_response($thread_id, $body, $name);
-    }
+    $name //= 'anonymous';
+    my $thread_id = $c->db->add_thread($subject, $name);
+
+    $c->db->add_response($thread_id, $body, $name);
+    return $c->render_json(+{response=>'true'});
+};
+
+post '/create/thread/insite' => sub {
+    my ($c) = @_;
+
+    my $subject = $c->req->param('subject');
+    my $name = $c->req->param('name');
+    my $body = $c->req->param('body') || '';
+
+    return $c->redirect('/') unless defined $subject;
+
+    $name //= 'anonymous';
+    my $thread_id = $c->db->add_thread($subject, $name);
+
+    $c->db->add_response($thread_id, $body, $name);
     return $c->redirect('/');
 };
 
 post '/create/response' => sub {
+    my ($c) = @_;
+    my $thread_id = $c->req->param('thread-id');
+    my $body = $c->req->param('body');
+    my $name = $c->req->param('name');
+
+    return $c->render_json(+{response => 'false'}) unless defined $thread_id && $body;
+
+    $name //= 'anonymous';
+
+    $c->db->add_response($thread_id, $body, $name);
+    return $c->render_json(+{response => 'true'});
+};
+
+post '/create/response/insite' => sub {
     my ($c) = @_;
     my $thread_id = $c->req->param('thread-id');
     my $body = $c->req->param('body');
@@ -44,4 +76,4 @@ post '/create/response' => sub {
 
     $c->db->add_response($thread_id, $body, $name);
     return $c->redirect('/');
-}
+};
