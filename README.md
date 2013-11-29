@@ -38,4 +38,4 @@ $ carton install
 ```
 
 ## start bbs2
-$ carton exec perl -Ilib script/bbs2-server
+$ carton exec perl -Ilib script/bbs-server
