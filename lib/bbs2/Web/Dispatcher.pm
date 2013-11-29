@@ -18,7 +18,7 @@ any '/' => sub {
     });
 };
 
-post '/create/thread' => sub {
+post '/api/create/thread' => sub {
     my ($c) = @_;
 
     my $subject = $c->req->param('subject');
@@ -33,7 +33,7 @@ post '/create/thread' => sub {
     return $c->render_json(+{response=>'true'});
 };
 
-post '/create/thread/insite' => sub {
+post '/create/thread' => sub {
     my ($c) = @_;
 
     my $subject = $c->req->param('subject');
@@ -49,7 +49,7 @@ post '/create/thread/insite' => sub {
     return $c->redirect('/');
 };
 
-post '/create/response' => sub {
+post '/api/create/response' => sub {
     my ($c) = @_;
     my $thread_id = $c->req->param('thread-id');
     my $body = $c->req->param('body');
@@ -63,7 +63,7 @@ post '/create/response' => sub {
     return $c->render_json(+{response => 'true'});
 };
 
-post '/create/response/insite' => sub {
+post '/create/response' => sub {
     my ($c) = @_;
     my $thread_id = $c->req->param('thread-id');
     my $body = $c->req->param('body');

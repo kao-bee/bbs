@@ -13,7 +13,7 @@
 
 +{
     'DBI' => [
-        'dbi:mysql:bbs2', 'root', '',
+        'dbi:mysql:bbs', 'root', '',
         +{ mysql_enable_utf8 => 1 },
     ],
 };
