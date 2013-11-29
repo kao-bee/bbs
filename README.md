@@ -1,8 +1,5 @@
 bbs
 ===
-
-# bbs
-
 * clone this repository
 * install carton from cpanm
 $ cpanm Carton
