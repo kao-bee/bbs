@@ -6,19 +6,19 @@ bbs
 $ cpanm Carton
 
 ## mysql setting
-```command line
 $ mysqld start # for linux
+
 $ mysql.server start # for mac
 
 $ mysqladmin -uroot create bbs
+
 $ mysql -uroot bbs < sql/mysql.sql
-```
 
 ## carton install
-```
+
 $ cd (this repository)
+
 $ carton install
-```
 
 ## change configue/development.pl
 ```development.pl
