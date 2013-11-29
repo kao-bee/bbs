@@ -61,7 +61,7 @@ sub get_threads {
     );
 }
 
-sub search_by_thread_id {
+sub search_response_by_thread_id {
     my ($self, $thread_id) = @_;
     my $responses_ref = $self->dbh->selectall_arrayref(
         qq{SELECT * FROM responses WHERE thread_id = $thread_id ORDER BY id ASC},

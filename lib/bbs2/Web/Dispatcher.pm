@@ -10,7 +10,7 @@ any '/' => sub {
     my $threads_ref = $c->db->get_threads;
 
     for my $thread (@$threads_ref) {
-        my $responses_ref = $c->db->search_by_thread_id($thread->{id});
+        my $responses_ref = $c->db->search_response_by_thread_id($thread->{id});
         $thread->{responses} = $responses_ref;
     }
     return $c->render('index.tx', {
