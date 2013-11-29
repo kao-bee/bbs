@@ -55,7 +55,7 @@ sub insert_response_sth {
 sub get_threads {
     my $self = shift;
 
-    my $entries_ref = $self->dbh->selectall_arrayref(
+    my $threads_ref = $self->dbh->selectall_arrayref(
         q{SELECT * FROM threads ORDER BY id DESC },
         {Slice => {}}
     );
@@ -63,20 +63,25 @@ sub get_threads {
 
 sub search_response_by_thread_id {
     my ($self, $thread_id) = @_;
+
     my $responses_ref = $self->dbh->selectall_arrayref(
         qq{SELECT * FROM responses WHERE thread_id = $thread_id ORDER BY id ASC},
         {Slice => {}}
     );
 }
 
-sub insert_entry {
-    my ($self, $body) = @_;
+sub search_thread_by_id {
+    my ($self, $id) = @_;
 
     my $sth = $self->dbh->prepare(
-        qq{INSERT INTO threads (subject) VALUE (?)}
+        q{SELECT * FROM threads WHERE id = ?;}
     );
+    $sth->execute($id);
+    my $thread_ref = $sth->fetchrow_hashref();
+    my $responses_ref = $self->search_response_by_thread_id($id);
 
-    $sth->execute($body);
+    $thread_ref->{'responses'} = $responses_ref;
+    return $thread_ref;
 }
 
 sub add_thread {

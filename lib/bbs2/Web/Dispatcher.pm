@@ -18,7 +18,7 @@ any '/' => sub {
     });
 };
 
-post '/api/create/thread' => sub {
+post '/api/thread' => sub {
     my ($c) = @_;
 
     my $subject = $c->req->param('subject');
@@ -30,10 +30,38 @@ post '/api/create/thread' => sub {
     my $thread_id = $c->db->add_thread($subject, $name);
 
     $c->db->add_response($thread_id, $body, $name);
-    return $c->render_json(+{response=>'true'});
+    return $c->render_json(+{
+            status=>200,
+            thread_id=>$thread_id,
+        });
 };
 
-post '/create/thread' => sub {
+post '/api/response' => sub {
+    my ($c) = @_;
+    my $thread_id = $c->req->param('thread-id');
+    my $body = $c->req->param('body');
+    my $name = $c->req->param('name');
+
+    return $c->render_json(+{response => 'false'}) unless defined $thread_id && $body;
+
+    $name //= 'anonymous';
+
+    $c->db->add_response($thread_id, $body, $name);
+    return $c->render_json(+{response => 'true'});
+};
+
+get '/api/thread' => sub {
+    my ($c) = @_;
+    my $thread_id = $c->req->param('thread_id');
+    return $c->render_json({status=>500}) unless defined $thread_id;
+    my $thread = $c->db->search_thread_by_id($thread_id);
+    return $c->render_json({
+            status => 200,
+            thread => $thread,
+        })
+};
+
+post '/thread' => sub {
     my ($c) = @_;
 
     my $subject = $c->req->param('subject');
@@ -49,21 +77,7 @@ post '/create/thread' => sub {
     return $c->redirect('/');
 };
 
-post '/api/create/response' => sub {
-    my ($c) = @_;
-    my $thread_id = $c->req->param('thread-id');
-    my $body = $c->req->param('body');
-    my $name = $c->req->param('name');
-
-    return $c->render_json(+{response => 'false'}) unless defined $thread_id && $body;
-
-    $name //= 'anonymous';
-
-    $c->db->add_response($thread_id, $body, $name);
-    return $c->render_json(+{response => 'true'});
-};
-
-post '/create/response' => sub {
+post '/response' => sub {
     my ($c) = @_;
     my $thread_id = $c->req->param('thread-id');
     my $body = $c->req->param('body');
